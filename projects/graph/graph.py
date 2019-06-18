@@ -98,7 +98,18 @@ class Graph:
         starting_vertex to destination_vertex in
         depth-first order.
         """
-        pass  # TODO
+        visited = set()
+        s = Stack()
+        s.push([starting_vertex])
+        while len(s.stack) > 0:
+            path = s.pop()
+            if path[-1] not in visited and path[-1] is not destination_vertex:
+                for neighbor in self.vertices[path[-1]]:
+                    path_copy = list(path)
+                    path_copy.append(neighbor)
+                    s.push(path_copy)
+            elif path[-1] == destination_vertex:
+                return path
 
 
 if __name__ == '__main__':
@@ -167,11 +178,11 @@ if __name__ == '__main__':
     Valid BFS path:
         [1, 2, 4, 6]
     '''
-    print(graph.bfs(1, 6))
+    # print(graph.bfs(1, 6))
 
     '''
     Valid DFS paths:
         [1, 2, 4, 6]
         [1, 2, 4, 7, 6]
     '''
-    # print(graph.dfs(1, 6))
+    print(graph.dfs(1, 6))
