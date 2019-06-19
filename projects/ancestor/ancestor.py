@@ -1,5 +1,6 @@
-from util import Stack, Queue
-
+import sys
+sys.path.append('../graph')
+from util import Queue
 
 def earliest_ancestor(rel_graph, target):
     paths = []
