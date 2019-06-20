@@ -23,17 +23,38 @@ player = Player("Name", world.startingRoom)
 
 # Fill this out
 traversalPath = []
-
-
+reversalPath = []
 
 # TRAVERSAL TEST
 visited_rooms = set()
 player.currentRoom = world.startingRoom
 visited_rooms.add(player.currentRoom)
 
+reverse = {'n':'s', 'e':'w','s':'n', 'w':'e'}
+
+while len(visited_rooms) < len(roomGraph):
+    next_move = None
+    for direction in player.currentRoom.getExits():
+        if player.currentRoom.getRoomInDirection(direction) not in visited_rooms:
+            next_move = direction
+    if next_move is not None:
+        traversalPath.append(next_move)
+        reversalPath = list(traversalPath)
+        player.travel(next_move)
+        visited_rooms.add(player.currentRoom)
+    else:
+        next_move = reverse[reversalPath.pop()]
+        traversalPath.append(next_move)
+        player.travel(next_move)
+        visited_rooms.add(player.currentRoom)
+    # print(next_move, len(roomGraph), len(visited_rooms))
+
 for move in traversalPath:
     player.travel(move)
     visited_rooms.add(player.currentRoom)
+
+# print(len(roomGraph), len(visited_rooms))
+# print(visited_rooms, player.currentRoom, traversalPath)
 
 if len(visited_rooms) == len(roomGraph):
     print(f"TESTS PASSED: {len(traversalPath)} moves, {len(visited_rooms)} rooms visited")
@@ -53,3 +74,4 @@ else:
 #         player.travel(cmds[0], True)
 #     else:
 #         print("I did not understand that command.")
+
