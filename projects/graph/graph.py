@@ -48,15 +48,15 @@ class Graph:
         beginning from starting_vertex.
         """
         collection = set()
-        q = Stack()
-        q.push(starting_vertex)
-        while q.size() > 0:
-            v = q.pop()
+        s = Stack()
+        s.push(starting_vertex)
+        while s.size() > 0:
+            v = s.pop()
             if v not in collection:
                 collection.add(v)
                 print(v)
                 for neighbor in self.vertices[v]:
-                    q.push(neighbor)
+                    s.push(neighbor)
 
     def dft_recursive(self, starting_vertex, visited=None):
         """
