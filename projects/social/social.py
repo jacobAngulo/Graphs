@@ -1,8 +1,30 @@
+from random import randint
+# import sys
+# sys.path.append('../graph')
+# from graph import Queue
+
+
+class Queue():
+    def __init__(self):
+        self.queue = []
+
+    def enqueue(self, value):
+        self.queue.append(value)
+
+    def dequeue(self):
+        if self.size() > 0:
+            return self.queue.pop(0)
+        else:
+            return None
+
+    def size(self):
+        return len(self.queue)
 
 
 class User:
     def __init__(self, name):
         self.name = name
+
 
 class SocialGraph:
     def __init__(self):
@@ -45,9 +67,20 @@ class SocialGraph:
         self.users = {}
         self.friendships = {}
         # !!!! IMPLEMENT ME
-
+        for _ in range(numUsers):
+            self.addUser('naem')
+            # print(self.users)
         # Add users
-
+        average = 0
+        while average is not avgFriendships:
+            count = 0
+            friendships = 0
+            for user in range(len(self.users)):
+                count += 1
+                for _ in self.friendships[list(self.users.keys())[user]]:
+                    friendships += 1
+            average = friendships // count
+            self.addFriendship(randint(1, numUsers), randint(1, numUsers))
         # Create friendships
 
     def getAllSocialPaths(self, userID):
@@ -61,6 +94,17 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+        q = Queue()
+        q.enqueue([userID])
+        while len(q.queue) > 0:
+            v = q.dequeue()
+            if v[-1] not in visited:
+                if v[-1] is not userID:
+                    visited[v[-1]] = v
+                for friend in self.friendships[v[-1]]:
+                    copy = list(v)
+                    copy.append(friend)
+                    q.enqueue(copy)
         return visited
 
 

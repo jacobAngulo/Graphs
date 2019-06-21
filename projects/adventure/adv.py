@@ -1,7 +1,6 @@
 from room import Room
 from player import Player
 from world import World
-
 import random
 
 # Load world
@@ -23,17 +22,175 @@ player = Player("Name", world.startingRoom)
 
 # Fill this out
 traversalPath = []
-
-
+reversalPath = []
 
 # TRAVERSAL TEST
 visited_rooms = set()
-player.currentRoom = world.startingRoom
 visited_rooms.add(player.currentRoom)
+
+reverse = {'n':'s', 'e':'w','s':'n', 'w':'e'}
+
+class Queue():
+    def __init__(self):
+        self.queue = []
+    def enqueue(self, value):
+        self.queue.append(value)
+    def dequeue(self):
+        if self.size() > 0:
+            return self.queue.pop(0)
+        else:
+            return None
+    def size(self):
+        return len(self.queue)
+
+class Stack():
+    def __init__(self):
+        self.stack = []
+    def push(self, value):
+        self.stack.append(value)
+    def pop(self):
+        if self.size() > 0:
+            return self.stack.pop()
+        else:
+            return None
+    def size(self):
+        return len(self.stack)
+
+
+# print(roomGraph[currentRoom][1])
+# been_there = set()
+
+# def get_path(current_room, target_room):
+#     q = Queue()
+#     q.enqueue([])
+
+#     while len(q.queue) > 0:
+#         pass
+
+# currentRoom = 0
+s = Stack()
+s.push([])
+
+## probably works but takes too long
+while s.size() > 0:
+    visited_rooms = set()
+    player.currentRoom = world.startingRoom
+    visited_rooms.add(player.currentRoom)
+    v = s.pop()
+    for direction in v:
+        player.travel(direction)
+        visited_rooms.add(player.currentRoom)
+    if len(visited_rooms) == len(roomGraph):
+        traversalPath = v
+        break
+    else: 
+        revisited_rooms = set()
+        available_path = False
+        r = Queue()
+        r.enqueue(v)
+        for direction in player.currentRoom.getExits():
+            if player.currentRoom.getRoomInDirection(direction) not in visited_rooms:
+                available_path = True
+                path_copy = list(v)
+                path_copy.append(direction)
+                s.push(path_copy)
+        while available_path == False:
+            player.currentRoom = world.startingRoom
+            w = r.dequeue()
+            for i in range(len(w)):
+                player.travel(w[i])
+                if player.currentRoom not in visited_rooms:
+                    available_path = True
+                    s.push(w)
+            for direction in player.currentRoom.getExits():
+                if player.currentRoom.getRoomInDirection(direction) not in revisited_rooms:
+                    revisited_rooms.add(player.currentRoom.getRoomInDirection(direction))
+                    path_copy = list(w)
+                    path_copy.append(direction)
+                    r.enqueue(path_copy)
+
+print(traversalPath)
+
+## doesn't work yet..
+
+# def quick_traverse(graph):
+#     visited = set()
+#     q = Queue()
+#     q.enqueue([])
+#     while len(q.queue) > 0:
+#         current_room = graph[0]
+#         visited.add(current_room[0])
+#         v = q.dequeue()
+#         for direction in v:
+#             current_room = graph[current_room[1][direction]]
+#             visited.add(current_room[0])
+#         if len(visited) == len(graph):
+#             return v
+#         else:
+#             available_path = False
+#             revisited = set()
+#             r = Queue()
+#             r.enqueue(list(v))
+#             for direction in current_room[1].keys():
+#                 if graph[current_room[1][direction]][0] not in visited:
+#                     available_path = True
+#                     path_copy = list(v)
+#                     path_copy.append(direction)
+#                     visited.add(graph[current_room[1][direction]][0])
+#                     q.enqueue(path_copy)
+#             while available_path == False:
+#                 w = r.dequeue()
+#                 current_room = graph[0]
+#                 for direction in w:
+#                     current_room = graph[current_room[1][direction]]
+#                     if current_room[0] not in visited:
+#                         available_path = True
+#                         visited.add(current_room[0])
+#                         q.enqueue(w)
+#                 for direction in current_room[1].keys():
+#                     if graph[current_room[1][direction]][0] not in revisited:
+#                         revisited.add(graph[current_room[1][direction]][0])
+#                         path_copy = list(w)
+#                         path_copy.append(direction)
+#                         r.enqueue(path_copy)
+
+# traversalPath =  quick_traverse(roomGraph)
+# print(traversalPath)
+
+        # revisited_rooms = set()
+        # while available_path == False:
+        #     player.currentRoom = world.startingRoom
+        #     revisited_rooms.add(player.currentRoom)
+        #     t = new_queue.dequeue()
+        #     for direction in t:
+        #         player.travel(direction)
+
+
+player.currentRoom = world.startingRoom
+
+# while len(visited_rooms) < len(roomGraph):
+#     next_move = None
+#     for direction in player.currentRoom.getExits():
+#         if player.currentRoom.getRoomInDirection(direction) not in visited_rooms:
+#             next_move = direction
+#     if next_move is not None:
+#         traversalPath.append(next_move)
+#         reversalPath = list(traversalPath)
+#         player.travel(next_move)
+#         visited_rooms.add(player.currentRoom)
+#     else:
+#         next_move = reverse[reversalPath.pop()]
+#         traversalPath.append(next_move)
+#         player.travel(next_move)
+#         visited_rooms.add(player.currentRoom)
+#     # print(next_move, len(roomGraph), len(visited_rooms))
 
 for move in traversalPath:
     player.travel(move)
     visited_rooms.add(player.currentRoom)
+
+# print(len(roomGraph), len(visited_rooms))
+# print(visited_rooms, player.currentRoom, traversalPath)
 
 if len(visited_rooms) == len(roomGraph):
     print(f"TESTS PASSED: {len(traversalPath)} moves, {len(visited_rooms)} rooms visited")
@@ -53,3 +210,4 @@ else:
 #         player.travel(cmds[0], True)
 #     else:
 #         print("I did not understand that command.")
+
